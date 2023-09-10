@@ -14,13 +14,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      initialRoute: '/',
       title: 'Джинс',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 92, 44, 175)),
         useMaterial3: true,
       ),
-      home: MenuScreen(),
+      home: const MenuScreen(),
+      getPages: [
+        GetPage(
+          name: '/',
+          page: () => const MenuScreen(),
+        ),
+      ],
     );
   }
 }
