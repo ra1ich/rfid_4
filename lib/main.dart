@@ -13,21 +13,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      initialRoute: '/',
-      title: 'Джинс',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 92, 44, 175)),
-        useMaterial3: true,
-      ),
-      home: const MenuScreen(),
-      getPages: [
-        GetPage(
-          name: '/',
-          page: () => const MenuScreen(),
-        ),
-      ],
+    return MaterialApp(
+      home: MenuScreen(),
     );
+    // return GetMaterialApp(
+    //   initialRoute: '/',
+    //   title: 'Джинс',
+    //   theme: ThemeData(
+    //     colorScheme: ColorScheme.fromSeed(
+    //         seedColor: const Color.fromARGB(255, 92, 44, 175)),
+    //     useMaterial3: true,
+    //   ),
+    //   home: const MenuScreen(),
+    //   getPages: [
+    //     GetPage(
+    //       name: '/',
+    //       page: () => const MenuScreen(),
+    //     ),
+    //   ],
+    // );
   }
 }
