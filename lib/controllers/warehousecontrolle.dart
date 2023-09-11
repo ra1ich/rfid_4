@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:rfid_4/controllers/settings/settingsservice.dart';
 // import 'package:isar/isar.dart';
 // import 'package:rfid_4/controllers/isarcontrollers.dart';
-import 'package:rfid_4/controllers/settingscontroller.dart';
+
 import 'package:rfid_4/metadata/catalogs/wharehouse.dart';
 
 class WarehouseController extends GetxController {
@@ -42,7 +43,7 @@ class WarehouseController extends GetxController {
 }
 
 class WarehouseProvider extends GetConnect {
-  SettingsController set = Get.put(SettingsController());
+  ConnectingSettingsController set = Get.put(ConnectingSettingsController());
   // Get request
 
   Future<Response> getWarehouses() {

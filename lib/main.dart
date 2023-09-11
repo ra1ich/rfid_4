@@ -21,11 +21,11 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromARGB(255, 92, 44, 175)),
         useMaterial3: true,
       ),
-      home: const MenuScreen(),
+      home: MenuScreen(),
       getPages: [
         GetPage(
           name: '/',
-          page: () => const MenuScreen(),
+          page: () => MenuScreen(),
         ),
       ],
     );

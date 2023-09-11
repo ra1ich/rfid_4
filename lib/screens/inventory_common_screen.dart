@@ -185,6 +185,7 @@ class InvRfidBluetooth extends StatelessWidget {
           Expanded(
             child: TextFormField(
               keyboardType: TextInputType.multiline,
+              
               maxLines: null,
               controller: rfid.textRfidController,
             ),

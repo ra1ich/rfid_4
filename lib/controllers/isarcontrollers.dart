@@ -3,6 +3,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:rfid_4/metadata/catalogs/rfidtag.dart';
 import 'package:rfid_4/metadata/docs/inventory.dart';
 import 'package:rfid_4/metadata/catalogs/wharehouse.dart';
+import 'package:rfid_4/metadata/settings/connectingsettings.dart';
 
 class IzarManager {
   static final IzarManager instance = IzarManager._();
@@ -39,7 +40,8 @@ class IzarManager {
       InventorySchema,
       RfidTagSchema,
       InventoryRfidSchema,
-      InventoryRfidDocSchema
+      InventoryRfidDocSchema,
+      ConnectingSettingsSchema
     ]);
   }
 }

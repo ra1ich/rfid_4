@@ -5,7 +5,8 @@ import 'package:isar/isar.dart';
 
 import 'package:rfid_4/controllers/isarcontrollers.dart';
 import 'package:rfid_4/controllers/rfidtagcontroller.dart';
-import 'package:rfid_4/controllers/settingscontroller.dart';
+import 'package:rfid_4/controllers/settings/settingsservice.dart';
+
 import 'package:rfid_4/controllers/warehousecontrolle.dart';
 import 'package:rfid_4/metadata/catalogs/rfidtag.dart';
 import 'package:rfid_4/metadata/docs/inventory.dart';
@@ -183,7 +184,7 @@ class InventoryController extends GetxController {
 }
 
 class InventoryeProvider extends GetConnect {
-  SettingsController set = Get.put(SettingsController());
+  ConnectingSettingsController set = Get.put(ConnectingSettingsController());
   WarehouseController wh = Get.put(WarehouseController());
   // Get request
 
