@@ -39,7 +39,9 @@ class RfidTagController extends GetxController {
       //put in isar base
 
       final isar = await IzarManager.instance.openActivityDB();
-      await isar.rfidTags.filter().tagIsNotEmpty().deleteAll();
+      await isar.writeTxn(() async {
+        await isar.rfidTags.filter().tagIsNotEmpty().deleteAll();
+      });
       await isar.writeTxn(() async {
         await isar.rfidTags.putAll(rfidtagList);
       });

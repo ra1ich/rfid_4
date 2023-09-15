@@ -12,7 +12,7 @@ class MenuScreen extends StatelessWidget {
     return Scaffold(
       drawer: const DrawerWidget(),
       appBar: AppBar(
-        title: Text("Джинс"),
+        title: const Text("Джинс"),
       ),
       body: Center(
           child: Column(
@@ -23,7 +23,7 @@ class MenuScreen extends StatelessWidget {
           ),
           FilledButton(
               onPressed: () => Get.to(() => WarehouseChooseScreen()),
-              child: Text("Инвентаризация")),
+              child: const Text("Инвентаризация")),
         ],
       )),
     );

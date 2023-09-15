@@ -82,7 +82,7 @@ class InvInfo extends StatelessWidget {
             onPressed: () => inv.postLeftovers(),
           ),
           ListTile(
-            title: Text("Инвентаризация"),
+            title: Text("Инвентаризация #${inv.currentDocid.value}"),
             subtitle: Text("${wh.currentWarehouse.value.name}"),
           ),
           Padding(
@@ -185,7 +185,6 @@ class InvRfidBluetooth extends StatelessWidget {
           Expanded(
             child: TextFormField(
               keyboardType: TextInputType.multiline,
-              
               maxLines: null,
               controller: rfid.textRfidController,
             ),

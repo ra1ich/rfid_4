@@ -27,7 +27,7 @@ class ConnectSettingsScreen extends StatelessWidget {
                     conn.setConnectingSettings();
                     Get.toEnd(() => MenuScreen());
                   },
-                  child: Text("Сохранить"))
+                  child: const Text("Сохранить"))
             ],
           ),
         ),

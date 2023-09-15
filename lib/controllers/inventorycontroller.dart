@@ -14,12 +14,12 @@ import 'package:rfid_4/metadata/docs/inventory.dart';
 class InventoryController extends GetxController {
   RxList<Inventory> inventoryList = <Inventory>[].obs;
   InventoryRfidDoc docNumber = InventoryRfidDoc();
-  int currentDocid = 0;
+  RxInt currentDocid = 0.obs;
 
   RxInt sumQuantity = 0.obs;
   RxInt sumFactQuantity = 0.obs;
 
-  RfidTagController _rfidController = Get.put(RfidTagController());
+  RfidTagController rfidController = Get.put(RfidTagController());
   WarehouseController wh = Get.put(WarehouseController());
 
   @override
@@ -33,7 +33,7 @@ class InventoryController extends GetxController {
     final isar = await IzarManager.instance.openActivityDB();
     sumQuantity.value = await isar.inventorys
         .filter()
-        .docNumberEqualTo(currentDocid)
+        .docNumberEqualTo(currentDocid.value)
         .quantityProperty()
         .sum();
   }
@@ -42,7 +42,7 @@ class InventoryController extends GetxController {
     final isar = await IzarManager.instance.openActivityDB();
     sumFactQuantity.value = await isar.inventorys
         .filter()
-        .docNumberEqualTo(currentDocid)
+        .docNumberEqualTo(currentDocid.value)
         .quantityFactProperty()
         .sum();
   }
@@ -59,7 +59,7 @@ class InventoryController extends GetxController {
       ..warehouseId = wh.currentWarehouse.value.id1c;
 
     await isar.writeTxn(() async {
-      currentDocid = await isar.inventoryRfidDocs.put(docNumber);
+      currentDocid.value = await isar.inventoryRfidDocs.put(docNumber);
     });
   }
 
@@ -77,7 +77,7 @@ class InventoryController extends GetxController {
 
       _list.forEach((e) {
         inventoryList.add(Inventory()
-          ..docNumber = currentDocid
+          ..docNumber = currentDocid.value
           ..itemCode = e["itemCode"]
           ..itemName = e["itemName"]
           ..itemid = e["itemid"]
@@ -91,12 +91,20 @@ class InventoryController extends GetxController {
       //put in isar base
 
       final isar = await IzarManager.instance.openActivityDB();
-      isar.inventorys.filter().docNumberEqualTo(currentDocid).deleteAllSync();
+
       await isar.writeTxn(() async {
+        await isar.inventorys
+            .filter()
+            .docNumberEqualTo(currentDocid.value)
+            .deleteAll();
+        await isar.inventoryRfids
+            .filter()
+            .docNumberEqualTo(currentDocid.value)
+            .deleteAll();
         await isar.inventorys.putAll(inventoryList);
-        await getSumQuantity();
-        await getSumFactQuantity();
       });
+      await getSumQuantity();
+      await getSumFactQuantity();
     }
   }
 
@@ -111,7 +119,7 @@ class InventoryController extends GetxController {
         .filter()
         .tegEqualTo(teg.tag)
         .and()
-        .docNumberEqualTo(currentDocid)
+        .docNumberEqualTo(currentDocid.value)
         .findFirstSync();
 
     if (invRfid != null) {
@@ -120,7 +128,7 @@ class InventoryController extends GetxController {
 
     invRfid = InventoryRfid()
       ..teg = teg.tag
-      ..docNumber = currentDocid;
+      ..docNumber = currentDocid.value;
 
     await isar.writeTxn(() async {
       await isar.inventoryRfids.put(invRfid!);
@@ -129,7 +137,7 @@ class InventoryController extends GetxController {
     //2. add quantity fact in inventory
     //2.1. get id item and ch
 
-    RfidTag rfditag = await _rfidController.findTeg(teg.tag!);
+    RfidTag rfditag = await rfidController.findTeg(teg.tag!);
 
     if (rfditag.itemid != "") {
       var inv = isar.inventorys
@@ -138,7 +146,7 @@ class InventoryController extends GetxController {
           .and()
           .chIdEqualTo(rfditag.chId)
           .and()
-          .docNumberEqualTo(currentDocid)
+          .docNumberEqualTo(currentDocid.value)
           .findFirstSync();
 
       if (inv != null) {
@@ -150,7 +158,7 @@ class InventoryController extends GetxController {
 
         List<Inventory> _inventoryList = isar.inventorys
             .filter()
-            .docNumberEqualTo(currentDocid)
+            .docNumberEqualTo(currentDocid.value)
             .sortByQuantityFactDesc()
             .findAllSync();
 
