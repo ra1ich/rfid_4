@@ -131,7 +131,23 @@ class InvRfidHard extends StatelessWidget {
                 )
               ],
             ),
-            Text("Будет рабоать с оборудованием")
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+
+              children: [
+                !rfid.isRfidScan.value
+                    ? FilledButton(
+                        onPressed: rfid.startListener,
+                        child: Text("Начать сканироание"))
+                    : Row(children: [
+                        ElevatedButton(
+                            onPressed: rfid.cancelListener,
+                            child: Text("Остановить сканироание")),
+                        
+                      ]),
+              ],
+            )
           ],
         ),
       ]));

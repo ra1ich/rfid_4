@@ -23,21 +23,90 @@ import android.os.SystemClock;
 
 import java.util.*;
 
+//stream
+import android.os.Handler;
+import io.flutter.plugin.common.EventChannel;
+import io.flutter.Log;
+//stream
+
 // import com.example.rfid.driver.Driver;
 // import com.example.rfid.driver.RfidDriver;
 
 public class MainActivity extends FlutterActivity {
   private static final String CHANNEL = "samples.flutter.dev/battery";
 
+  public static final String STREAM = "com.chamelalaboratory.demo.flutter_event_channel/eventChannel";
+  private EventChannel.EventSink attachEvent;
+  final String TAG_NAME = "From_Native";
+  private int count = 1;
+  private Handler handler;
+
   UHFManager uhfmanager;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		
-		
-		
-	}
+	// @Override
+	// protected void onCreate(Bundle savedInstanceState) {
+	// 	super.onCreate(savedInstanceState);
+
+	// }
+
+  private final Runnable runnable = new Runnable() {
+      @Override
+      public void run() {
+          // int TOTAL_COUNT = 100;
+          // if (count > TOTAL_COUNT) {
+          //     attachEvent.endOfStream();
+          // } else {
+              // double percentage = ((double) count / TOTAL_COUNT);
+              // Log.w(TAG_NAME, "\nParsing From Native:  " + percentage);
+              // attachEvent.success(percentage);
+              String[] buf = uhfmanager.readTagFromBuffer();
+              attachEvent.success(Arrays.toString(buf));
+          // }
+          // count++;
+          handler.postDelayed(this, 50);
+      }
+  };
+
+  @Override
+  protected void onDestroy() {
+      super.onDestroy();
+      handler.removeCallbacks(runnable);
+      handler = null;
+      attachEvent = null;
+  }
+
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+
+      new EventChannel(Objects.requireNonNull(getFlutterEngine()).getDartExecutor(), STREAM).setStreamHandler(
+              new EventChannel.StreamHandler() {
+                  @Override
+                  public void onListen(Object args, final EventChannel.EventSink events) {
+                      Log.w(TAG_NAME, "Adding listener");
+                      attachEvent = events;
+                      count = 1;
+                      handler = new Handler();
+                      runnable.run();
+                  }
+
+                  @Override
+                  public void onCancel(Object args) {
+
+                      uhfmanager.stopInventory();
+                      Log.w(TAG_NAME, "Cancelling listener");
+                      handler.removeCallbacks(runnable);
+                      handler = null;
+                      count = 1;
+                      attachEvent = null;
+                      System.out.println("StreamHandler - onCanceled: ");
+                  }
+              }
+      );
+  }
+
+
 
   @Override
   public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {

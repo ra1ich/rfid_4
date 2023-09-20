@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:rfid_4/controllers/inventorycontroller.dart';
@@ -42,6 +44,18 @@ class RfidStreamController extends GetxController {
     } on PlatformException catch (e) {
       batteryLevel.value = "Failed to get battery level: '${e.message}'.";
     }
+  }
+
+  void getRfidStream(dataStream) async {
+    List mylist = dataStream.split(',');
+
+    String tagString = mylist[1].trim();
+
+    RfidTag rfidTeg = await rfidController.findTeg(tagString);
+
+    rfidlist.addIf(!rfidlist.contains(tagString), tagString);
+
+    inv.putQuantityFact(rfidTeg);
   }
 
   void endRfid() async {
@@ -110,4 +124,35 @@ class RfidStreamController extends GetxController {
   void typeRfidToggle() {
     isBlutoothScaner.value = !isBlutoothScaner.value;
   }
+
+  //Стрим тест
+  static const stream = EventChannel(
+      'com.chamelalaboratory.demo.flutter_event_channel/eventChannel');
+
+  late StreamSubscription _streamSubscription;
+  RxString currentValue = "старт".obs;
+
+  void startListener() {
+    initRfid();
+    isRfidScan.value = true;
+    _streamSubscription = stream.receiveBroadcastStream().listen(listenStream);
+  }
+
+  void cancelListener() {
+    _streamSubscription.cancel();
+
+    isRfidScan.value = false;
+
+    currentValue.value = "старт";
+  }
+
+  void listenStream(value) {
+    debugPrint("Received From Native:  $value\n");
+
+    currentValue.value = value;
+
+    getRfidStream(value);
+  }
+
+  //Стрим тест
 }

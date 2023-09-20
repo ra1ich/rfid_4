@@ -25,7 +25,7 @@ class ConnectSettingsScreen extends StatelessWidget {
               FilledButton(
                   onPressed: () {
                     conn.setConnectingSettings();
-                    Get.toEnd(() => MenuScreen());
+                    Get.to(() => MenuScreen());
                   },
                   child: const Text("Сохранить"))
             ],
